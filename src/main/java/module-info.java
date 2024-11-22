@@ -7,6 +7,7 @@ module com.skunkworks {
     requires net.synedra.validatorfx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+    requires java.desktop;
 
     opens com.skunkworks to javafx.fxml;
     exports com.skunkworks;
