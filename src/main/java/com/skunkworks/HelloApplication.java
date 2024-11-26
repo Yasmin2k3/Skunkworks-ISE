@@ -15,12 +15,10 @@ import java.io.IOException;
 
 public class HelloApplication extends Application {
 
-
-
     int rowNum = 2;
     int colNum = 10;
-    int cellHeight = 100;
-    int cellWidth = 100;
+    int cellHeight = 70;
+    int cellWidth = 70;
 
     @Override
     public void start(Stage stage) throws IOException{
@@ -36,7 +34,10 @@ public class HelloApplication extends Application {
 
         for (int row=0; row<rowNum; row++){
             for (int col=0; col<colNum; col++){
-                Rectangle rec = new Rectangle(cellWidth-5, cellHeight-5, Color.BLACK);
+                Rectangle rec = new Rectangle(cellWidth-5, cellHeight-5);
+                rec.setFill(Color.rgb(91, 127, 255));
+                rec.setStroke(Color.rgb(82, 64, 163));
+                rec.setStrokeWidth(2);
 
                 GridPane.setRowIndex(rec, row);
                 GridPane.setColumnIndex(rec, col);
@@ -46,7 +47,7 @@ public class HelloApplication extends Application {
 
         gp.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(gp, 350, 250);
+        Scene scene = new Scene(gp, 800, 600);
         stage.setScene(scene);
         stage.show();
     }
