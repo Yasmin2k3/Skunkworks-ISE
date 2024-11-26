@@ -3,20 +3,26 @@ package com.skunkworks;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class HelloApplication extends Application {
 
+    //TODO: math so that rownum and colnum depends on arraylist
     int rowNum = 2;
     int colNum = 10;
     int cellHeight = 70;
@@ -30,7 +36,6 @@ public class HelloApplication extends Application {
         }
 
         Collections.sort(arr);
-        System.out.println(arr);
         return arr;
     }
 
@@ -38,6 +43,7 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException{
         stage.setTitle("Bok");
         GridPane gp = new GridPane();
+        ArrayList<Integer> sort = makeList();
 
         for (int col=0; col<colNum; col++){
             gp.getColumnConstraints().add(new ColumnConstraints(cellWidth));
@@ -48,14 +54,23 @@ public class HelloApplication extends Application {
 
         for (int row=0; row<rowNum; row++){
             for (int col=0; col<colNum; col++){
+                Text text = new Text("bok");
+                text.setFill(Color.BLACK);
+                text.setFont(Font.font("Calibri", FontWeight.BOLD, FontPosture.REGULAR,12));
+                text.setX(30);
+                text.setY(30);
+
                 Rectangle rec = new Rectangle(cellWidth-5, cellHeight-5);
                 rec.setFill(Color.rgb(91, 127, 255));
                 rec.setStroke(Color.rgb(82, 64, 163));
                 rec.setStrokeWidth(2);
 
-                GridPane.setRowIndex(rec, row);
-                GridPane.setColumnIndex(rec, col);
-                gp.getChildren().add(rec);
+                StackPane stackPane = new StackPane();
+                stackPane.getChildren().addAll(rec, text);
+
+                GridPane.setRowIndex(stackPane, row);
+                GridPane.setColumnIndex(stackPane, col);
+                gp.getChildren().add(stackPane);
             }
         }
 
