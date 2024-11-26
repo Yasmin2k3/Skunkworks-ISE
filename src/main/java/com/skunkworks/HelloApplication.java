@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class HelloApplication extends Application {
 
@@ -19,6 +21,18 @@ public class HelloApplication extends Application {
     int colNum = 10;
     int cellHeight = 70;
     int cellWidth = 70;
+
+    public ArrayList makeList(){
+        ArrayList<Integer> arr = new ArrayList<>();
+
+        for(int i=0; i<20; i++){
+            arr.add((int)(Math.random()*100 +1));
+        }
+
+        Collections.sort(arr);
+        System.out.println(arr);
+        return arr;
+    }
 
     @Override
     public void start(Stage stage) throws IOException{
