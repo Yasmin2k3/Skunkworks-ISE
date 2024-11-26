@@ -44,6 +44,7 @@ public class HelloApplication extends Application {
         stage.setTitle("Bok");
         GridPane gp = new GridPane();
         ArrayList<Integer> sort = makeList();
+        System.out.println(sort);
 
         for (int col=0; col<colNum; col++){
             gp.getColumnConstraints().add(new ColumnConstraints(cellWidth));
@@ -54,7 +55,9 @@ public class HelloApplication extends Application {
 
         for (int row=0; row<rowNum; row++){
             for (int col=0; col<colNum; col++){
-                Text text = new Text("bok");
+                System.out.println("index: " + (col + (10*row)));
+                String textContents = Integer.toString(sort.get(col + (10*row)));
+                Text text = new Text(textContents);
                 text.setFill(Color.BLACK);
                 text.setFont(Font.font("Calibri", FontWeight.BOLD, FontPosture.REGULAR,12));
                 text.setX(30);
