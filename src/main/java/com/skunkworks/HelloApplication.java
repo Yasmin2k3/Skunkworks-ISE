@@ -1,10 +1,12 @@
 package com.skunkworks;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ public class HelloApplication extends Application {
     int colNum = 10;
     int cellHeight = 70;
     int cellWidth = 70;
+    VBox display = new VBox(8);
 
     public ArrayList makeList(){
         ArrayList<Integer> arr = new ArrayList<>();
@@ -47,22 +51,26 @@ public class HelloApplication extends Application {
 
     //algorithm gotten from geeks for geeks
     //TODO: remove yellow rectangles if they already exist
-    private int binarySearch(ArrayList<Integer> arr, int x, GridPane gp)
-    {
+    private int binarySearch(ArrayList<Integer> arr, int x, GridPane gp) throws InterruptedException {
+
         Rectangle rec = new Rectangle(cellWidth-5, cellHeight-5);
         rec.setFill(Color.rgb(232, 215, 86));
         rec.setStroke(Color.rgb(204, 183, 47));
         rec.setStrokeWidth(2);
+
         int low = 0, high = arr.size() - 1;
         while (low <= high) {
 
             int mid = low + (high - low) / 2;
+
+
 //            System.out.println(arr.indexOf(arr.get(mid))/10);
 //            System.out.println(arr.indexOf(arr.get(mid))%10);
             GridPane.setRowIndex(rec, arr.indexOf(arr.get(mid))/10); //gets the 10ths values
             GridPane.setColumnIndex(rec, arr.indexOf(arr.get(mid))%10);//gets the first digit
             //System.out.println(gp.getChildren());
             gp.getChildren().add(rec);
+            System.out.println("bok");
 
             // Check if x is present at mid
             if (arr.get(mid) == x){
@@ -139,13 +147,16 @@ public class HelloApplication extends Application {
             public void handle(ActionEvent e) {
                 int randomNum = sort.get((int) (Math.random() * sort.size()));
                 System.out.println("Finding: " + randomNum);
-                binarySearch(sort, randomNum, gp);
+                try {
+                    binarySearch(sort, randomNum, gp);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         };
         button.setOnAction(event);
 
         //displays everything on screen in a nice format
-        VBox display = new VBox(8);
         display.getChildren().addAll(button, gp);
         display.setAlignment(Pos.TOP_CENTER);
 
