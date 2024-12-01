@@ -1,7 +1,6 @@
 package com.skunkworks;
 
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -59,39 +58,43 @@ public class HelloApplication extends Application {
         rec.setStrokeWidth(2);
 
         int low = 0, high = arr.size() - 1;
-        while (low <= high) {
 
-            int mid = low + (high - low) / 2;
+        // Create a Timeline for animations
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
 
+        // Store variables that need to change between keyframes
+        final int[] currentLow = {low};
+        final int[] currentHigh = {high};
+        final boolean[] found = {false};
 
-//            System.out.println(arr.indexOf(arr.get(mid))/10);
-//            System.out.println(arr.indexOf(arr.get(mid))%10);
-            GridPane.setRowIndex(rec, arr.indexOf(arr.get(mid))/10); //gets the 10ths values
-            GridPane.setColumnIndex(rec, arr.indexOf(arr.get(mid))%10);//gets the first digit
-            //System.out.println(gp.getChildren());
-            gp.getChildren().add(rec);
-            System.out.println("bok");
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0.7), event -> {
+            if (currentLow[0] > currentHigh[0] || found[0]) {
+                timeline.stop();
+                return;
+            }
+
+            int mid = currentLow[0] + (currentHigh[0] - currentLow[0]) / 2;
+
+            // Update the grid with the current rectangle position
+            GridPane.setRowIndex(rec, mid / 10); // 10 = number of columns
+            GridPane.setColumnIndex(rec, mid % 10);
+            if (!gp.getChildren().contains(rec)) {
+                gp.getChildren().add(rec);
+            }
 
             // Check if x is present at mid
-            if (arr.get(mid) == x){
-                return mid;
+            if (arr.get(mid) == x) {
+                found[0] = true;
+                System.out.println("Found at index: " + mid);
+            } else if (arr.get(mid) < x) {
+                currentLow[0] = mid + 1;
+            } else {
+                currentHigh[0] = mid - 1;
             }
-            // If x greater, ignore left half
-            else if (arr.get(mid) < x) {
+        }));
 
-                low = mid + 1;
-                gp.getChildren().remove(rec);
-            }
-
-                // If x is smaller, ignore right half
-            else {
-                high = mid - 1;
-                gp.getChildren().remove(rec);
-            }
-        }
-
-        // If we reach here, then element was
-        // not present
+        timeline.play();
         return -1;
     }
 
@@ -133,7 +136,7 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException{
-        stage.setTitle("Bok");
+        stage.setTitle("Binary Search Visualizer");
         ArrayList<Integer> sort = makeList();
         System.out.println(sort);
 
@@ -149,6 +152,7 @@ public class HelloApplication extends Application {
                 System.out.println("Finding: " + randomNum);
                 try {
                     binarySearch(sort, randomNum, gp);
+                    //if we find it: celebrate
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
