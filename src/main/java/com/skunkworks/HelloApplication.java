@@ -10,10 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -31,13 +28,15 @@ import java.util.Collections;
 public class HelloApplication extends Application {
 
     //TODO: math so that rownum and colnum depends on arraylist
+    //TODO: make sort in constructor
     int rowNum = 2;
     int colNum = 10;
     int cellHeight = 70;
     int cellWidth = 70;
-    VBox display = new VBox(8);
+    VBox display = new VBox(30);
+    VBox inputGrid = new VBox(8);
 
-    public ArrayList makeList(){
+    public ArrayList<Integer> makeList(){
         ArrayList<Integer> arr = new ArrayList<>();
 
         for(int i=0; i<20; i++){
@@ -50,27 +49,31 @@ public class HelloApplication extends Application {
 
     //algorithm gotten from geeks for geeks
     //TODO: remove yellow rectangles if they already exist
-    private int binarySearch(ArrayList<Integer> arr, int x, GridPane gp) throws InterruptedException {
+    private void binarySearch(ArrayList<Integer> arr, int x, GridPane gp) throws InterruptedException {
 
         Rectangle rec = new Rectangle(cellWidth-5, cellHeight-5);
         rec.setFill(Color.rgb(232, 215, 86));
         rec.setStroke(Color.rgb(204, 183, 47));
         rec.setStrokeWidth(2);
 
-        int low = 0, high = arr.size() - 1;
+        //these need to be final for some reason
+        final int low = 0, high = arr.size() - 1;
 
-        // Create a Timeline for animations
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
 
         // Store variables that need to change between keyframes
-        final int[] currentLow = {low};
-        final int[] currentHigh = {high};
-        final boolean[] found = {false};
+        int[] currentLow = {low};
+        int[] currentHigh = {high};
+        boolean[] found = {false};
 
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0.7), event -> {
+            //to use for 'found' or 'not found'
+            Label resultLabel;
+
             if (currentLow[0] > currentHigh[0] || found[0]) {
                 timeline.stop();
+
                 return;
             }
 
@@ -86,7 +89,7 @@ public class HelloApplication extends Application {
             // Check if x is present at mid
             if (arr.get(mid) == x) {
                 found[0] = true;
-                System.out.println("Found at index: " + mid);
+                System.out.println("Found index: " + mid);
             } else if (arr.get(mid) < x) {
                 currentLow[0] = mid + 1;
             } else {
@@ -95,7 +98,6 @@ public class HelloApplication extends Application {
         }));
 
         timeline.play();
-        return -1;
     }
 
     private GridPane makeGrid(ArrayList<Integer> sort){
@@ -133,13 +135,9 @@ public class HelloApplication extends Application {
         return gp;
     }
 
-
-    @Override
-    public void start(Stage stage) throws IOException{
-        stage.setTitle("Binary Search Visualizer");
-        ArrayList<Integer> sort = makeList();
+    private VBox randomSearch(ArrayList<Integer> sort){
+        VBox randomGrid = new VBox(8);
         System.out.println(sort);
-
         GridPane gp = makeGrid(sort);
 
         //adding button
@@ -149,10 +147,16 @@ public class HelloApplication extends Application {
         EventHandler<ActionEvent> event = new EventHandler<>() {
             public void handle(ActionEvent e) {
                 int randomNum = sort.get((int) (Math.random() * sort.size()));
-                System.out.println("Finding: " + randomNum);
+                Label finding = new Label("finding: " + randomNum);
+                HBox buttonAndText = new HBox(5, button, finding);
+                buttonAndText.setAlignment(Pos.CENTER);
+                //refresh:
+                randomGrid.getChildren().clear();
+                GridPane gp = makeGrid(sort);
+                randomGrid.getChildren().addAll(buttonAndText, gp);
+
                 try {
                     binarySearch(sort, randomNum, gp);
-                    //if we find it: celebrate
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -161,8 +165,20 @@ public class HelloApplication extends Application {
         button.setOnAction(event);
 
         //displays everything on screen in a nice format
-        display.getChildren().addAll(button, gp);
-        display.setAlignment(Pos.TOP_CENTER);
+        randomGrid.getChildren().addAll(button, gp);
+        randomGrid.setAlignment(Pos.TOP_CENTER);
+
+        return randomGrid;
+    }
+
+
+    @Override
+    public void start(Stage stage) throws IOException{
+        stage.setTitle("Binary Search Visualizer");
+        ArrayList<Integer> sort = makeList();
+        VBox randomGrid = randomSearch(sort);
+
+        display.getChildren().addAll(randomGrid);
 
         Scene scene = new Scene(display, 800, 600);
         stage.setScene(scene);
