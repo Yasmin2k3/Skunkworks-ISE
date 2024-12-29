@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -171,14 +172,66 @@ public class HelloApplication extends Application {
         return randomGrid;
     }
 
+    private VBox inputSearch(ArrayList<Integer> sort){
+        VBox inputGrid = new VBox(8);
+        GridPane gp = makeGrid(sort);
+
+        //adding input
+        Label label1 = new Label("Search number:");
+        TextField textField = new TextField();
+        //button for input
+        Button button = new Button("Search");
+        button.setDefaultButton(true);
+        //make button do something on action:
+
+        HBox hb = new HBox();
+        hb.getChildren().addAll(label1, textField, button);
+        hb.setSpacing(10);
+        hb.setAlignment(Pos.CENTER);
+
+        EventHandler<ActionEvent> event = new EventHandler<>() {
+            public void handle(ActionEvent e) {
+                //handling inputted number:
+                int num=0;
+                try{
+                    num = Integer.parseInt(textField.getText());
+                }catch (Exception ex){
+                    System.out.println(ex.getMessage());
+                    throw new RuntimeException();
+                }
+
+
+                Label finding = new Label("finding: " + num);
+                HBox buttonAndText = new HBox(5, hb, finding);
+                buttonAndText.setAlignment(Pos.CENTER);
+                //refresh:
+                inputGrid.getChildren().clear();
+                GridPane gp = makeGrid(sort);
+                inputGrid.getChildren().addAll(buttonAndText, gp);
+
+                try {
+                    binarySearch(sort, num, gp);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        };
+        button.setOnAction(event);
+
+        inputGrid.getChildren().addAll(hb, gp);
+        inputGrid.setAlignment(Pos.TOP_CENTER);
+
+        return inputGrid;
+    }
 
     @Override
     public void start(Stage stage) throws IOException{
         stage.setTitle("Binary Search Visualizer");
         ArrayList<Integer> sort = makeList();
         VBox randomGrid = randomSearch(sort);
+        VBox inputGrid = inputSearch(sort);
 
-        display.getChildren().addAll(randomGrid);
+        display.getChildren().addAll(randomGrid, inputGrid);
 
         Scene scene = new Scene(display, 800, 600);
         stage.setScene(scene);
