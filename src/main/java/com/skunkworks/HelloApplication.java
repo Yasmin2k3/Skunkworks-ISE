@@ -68,7 +68,7 @@ public class HelloApplication extends Application {
         int[] currentHigh = {high};
         boolean[] found = {false};
 
-        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0.7), event -> {
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), event -> {
             //to use for 'found' or 'not found'
             Label resultLabel;
 
