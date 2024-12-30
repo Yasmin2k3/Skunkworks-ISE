@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-//TODO: Add stackpane with grid and then label after?
-
 public class HelloApplication extends Application {
 
     int rowNum = 2;
@@ -33,7 +31,6 @@ public class HelloApplication extends Application {
     int cellHeight = 70;
     int cellWidth = 70;
     VBox display = new VBox(30);
-    VBox inputGrid = new VBox(8);
 
     public ArrayList<Integer> makeList(){
         ArrayList<Integer> arr = new ArrayList<>();
@@ -98,7 +95,7 @@ public class HelloApplication extends Application {
         timeline.play();
     }
 
-    private GridPane makeGrid(ArrayList<Integer> sort){
+    private GridPane makeGrid(){
         GridPane gp = new GridPane();
 
         for (int col=0; col<colNum; col++){
@@ -160,7 +157,7 @@ public class HelloApplication extends Application {
     private VBox randomSearch(ArrayList<Integer> sort){
         VBox randomGrid = new VBox(8);
         System.out.println(sort);
-        GridPane gp = makeGrid(sort);
+        GridPane gp = makeGrid();
 
         //numbers in the sorted list:
         GridPane arrayNumbers = makeGridLabels(sort);
@@ -178,7 +175,7 @@ public class HelloApplication extends Application {
 
                 //refresh:
                 randomGrid.getChildren().clear();
-                GridPane gp = makeGrid(sort);
+                GridPane gp = makeGrid();
                 StackPane sp = new StackPane();
                 sp.getChildren().addAll(gp, arrayNumbers);
                 randomGrid.getChildren().addAll(buttonAndText, sp);
@@ -205,7 +202,7 @@ public class HelloApplication extends Application {
 
     private VBox inputSearch(ArrayList<Integer> sort){
         VBox inputGrid = new VBox(8);
-        GridPane gp = makeGrid(sort);
+        GridPane gp = makeGrid();
 
         //numbers in the sorted list:
         GridPane arrayNumbers = makeGridLabels(sort);
@@ -239,7 +236,7 @@ public class HelloApplication extends Application {
                 buttonAndText.setAlignment(Pos.CENTER);
                 //refresh:
                 inputGrid.getChildren().clear();
-                GridPane gp = makeGrid(sort);
+                GridPane gp = makeGrid();
                 StackPane sp = new StackPane();
                 sp.getChildren().addAll(gp, arrayNumbers);
                 inputGrid.getChildren().addAll(buttonAndText, sp);
