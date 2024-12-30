@@ -28,8 +28,6 @@ import java.util.Collections;
 
 public class HelloApplication extends Application {
 
-    //TODO: math so that rownum and colnum depends on arraylist
-    //TODO: make sort in constructor
     int rowNum = 2;
     int colNum = 10;
     int cellHeight = 70;
@@ -49,7 +47,6 @@ public class HelloApplication extends Application {
     }
 
     //algorithm gotten from geeks for geeks
-    //TODO: remove yellow rectangles if they already exist
     private void binarySearch(ArrayList<Integer> arr, int x, GridPane gp) throws InterruptedException {
 
         Rectangle rec = new Rectangle(cellWidth-5, cellHeight-5);
@@ -113,20 +110,44 @@ public class HelloApplication extends Application {
 
         for (int row=0; row<rowNum; row++){
             for (int col=0; col<colNum; col++){
-                //System.out.println("index: " + (col + (10*row)));
-                String textContents = Integer.toString(sort.get(col + (10*row)));
-                Label text = new Label(textContents);
-                text.setFont(Font.font("Calibri", FontWeight.BOLD, FontPosture.REGULAR,12));
+//                String textContents = Integer.toString(sort.get(col + (10*row)));
+//                Label text = new Label(textContents);
+//                text.setFont(Font.font("Calibri", FontWeight.BOLD, FontPosture.REGULAR,12));
 
                 Rectangle rec = new Rectangle(cellWidth-5, cellHeight-5);
                 rec.setFill(Color.rgb(91, 127, 255));
                 rec.setStroke(Color.rgb(82, 64, 163));
                 rec.setStrokeWidth(2);
 
-                //use this for updating the colours:
+                //adds coloured rectangles for grid:
                 GridPane.setRowIndex(rec, row);
                 GridPane.setColumnIndex(rec, col);
                 gp.getChildren().add(rec);
+                //gp.add(text, col, row);
+                //GridPane.setHalignment(text, HPos.CENTER);
+            }
+        }
+
+        gp.setAlignment(Pos.CENTER);
+        return gp;
+    }
+
+    private GridPane makeGridLabels(ArrayList<Integer> sort){
+        GridPane gp = new GridPane();
+
+        for (int col=0; col<colNum; col++){
+            gp.getColumnConstraints().add(new ColumnConstraints(cellWidth));
+        }
+        for (int row=0; row<rowNum; row++){
+            gp.getRowConstraints().add(new RowConstraints(cellHeight));
+        }
+
+        for (int row=0; row<rowNum; row++) {
+            for (int col = 0; col < colNum; col++) {
+                String textContents = Integer.toString(sort.get(col + (10 * row)));
+                Label text = new Label(textContents);
+                text.setFont(Font.font("Calibri", FontWeight.BOLD, FontPosture.REGULAR, 12));
+
                 gp.add(text, col, row);
                 GridPane.setHalignment(text, HPos.CENTER);
             }
@@ -141,6 +162,9 @@ public class HelloApplication extends Application {
         System.out.println(sort);
         GridPane gp = makeGrid(sort);
 
+        //numbers in the sorted list:
+        GridPane arrayNumbers = makeGridLabels(sort);
+
         //adding button
         Button button = new Button("Search for a random number");
         button.setDefaultButton(true);
@@ -151,10 +175,13 @@ public class HelloApplication extends Application {
                 Label finding = new Label("finding: " + randomNum);
                 HBox buttonAndText = new HBox(5, button, finding);
                 buttonAndText.setAlignment(Pos.CENTER);
+
                 //refresh:
                 randomGrid.getChildren().clear();
                 GridPane gp = makeGrid(sort);
-                randomGrid.getChildren().addAll(buttonAndText, gp);
+                StackPane sp = new StackPane();
+                sp.getChildren().addAll(gp, arrayNumbers);
+                randomGrid.getChildren().addAll(buttonAndText, sp);
 
                 try {
                     binarySearch(sort, randomNum, gp);
@@ -165,8 +192,12 @@ public class HelloApplication extends Application {
         };
         button.setOnAction(event);
 
+        //make StackPane for text
+        StackPane sp = new StackPane();
+        sp.getChildren().addAll(gp, arrayNumbers);
+
         //displays everything on screen in a nice format
-        randomGrid.getChildren().addAll(button, gp);
+        randomGrid.getChildren().addAll(button, sp);
         randomGrid.setAlignment(Pos.TOP_CENTER);
 
         return randomGrid;
@@ -176,13 +207,15 @@ public class HelloApplication extends Application {
         VBox inputGrid = new VBox(8);
         GridPane gp = makeGrid(sort);
 
+        //numbers in the sorted list:
+        GridPane arrayNumbers = makeGridLabels(sort);
+
         //adding input
         Label label1 = new Label("Search number:");
         TextField textField = new TextField();
         //button for input
         Button button = new Button("Search");
         button.setDefaultButton(true);
-        //make button do something on action:
 
         HBox hb = new HBox();
         hb.getChildren().addAll(label1, textField, button);
@@ -207,7 +240,9 @@ public class HelloApplication extends Application {
                 //refresh:
                 inputGrid.getChildren().clear();
                 GridPane gp = makeGrid(sort);
-                inputGrid.getChildren().addAll(buttonAndText, gp);
+                StackPane sp = new StackPane();
+                sp.getChildren().addAll(gp, arrayNumbers);
+                inputGrid.getChildren().addAll(buttonAndText, sp);
 
                 try {
                     binarySearch(sort, num, gp);
@@ -218,7 +253,10 @@ public class HelloApplication extends Application {
         };
         button.setOnAction(event);
 
-        inputGrid.getChildren().addAll(hb, gp);
+
+        StackPane sp = new StackPane();
+        sp.getChildren().addAll(gp, arrayNumbers);
+        inputGrid.getChildren().addAll(hb, sp);
         inputGrid.setAlignment(Pos.TOP_CENTER);
 
         return inputGrid;
@@ -228,7 +266,9 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException{
         stage.setTitle("Binary Search Visualizer");
         ArrayList<Integer> sort = makeList();
+
         VBox randomGrid = randomSearch(sort);
+
         VBox inputGrid = inputSearch(sort);
 
         display.getChildren().addAll(randomGrid, inputGrid);
